@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helpcall Alert System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+<body>
+    <div class="container">
+        <img src="../static/img.png" alt="image">
+        <h1>Helpcall Alert Form</h1>
+        <form method="POST">
+            <label for="helpcall_alert_station">Helpcall Alert Station:</label>
+            <select name="helpcall_alert_station" id="helpcall_alert_station">
+                {% for station in stations %}
+                    <option value="{{ station }}">{{ station }}</option>
+                {% endfor %}
+            </select>
+            <label for="operator_name">Operator Name:</label>
+            <select name="operator_name" id="operator_name">
+                <option value="lokesh">lokesh</option>
+                <option value="ashok">ashok</option>
+                <option value="arvind">arvind</option>
+                <option value="ramu">ramu</option>
+            </select>
+            <label for="problem_description">Problem Description:</label>
+            <textarea name="problem_description" id="problem_description" placeholder="Describe the problem" required></textarea>
+            <button type="button" onclick="startSpeechRecognition('problem_description')">Speak</button>
+            <label for="action_taken">Action Taken:</label>
+            <textarea name="action_taken" id="action_taken" placeholder="Describe the action taken" required></textarea>
+            <button type="button" onclick="startSpeechRecognition('action_taken')">Speak</button>
+            <button type="submit">Submit</button>
+        </form>
+        {% if message %}
+            <div class="alert">
+                <p>{{ message }}</p>
+            </div>
+        {% endif %}
+    </div>
+    <script>
+        function startSpeechRecognition(targetId) {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById(targetId).value = transcript;
+            };
+            recognition.onerror = function(event) {
+                console.error("Speech recognition error:", event.error);
+            };
+            recognition.start();
+        }
+    </script>
+</body>
+</html>
